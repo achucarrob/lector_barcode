@@ -7,5 +7,11 @@ def index():
     return "Hello World!"
 
 @app.route("product/:product_name")
+def consultar_producto():
+    if method == "GET":
+         url = 'api url'
+
+         response = url[0]
+
 
 

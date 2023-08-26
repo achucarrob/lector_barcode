@@ -36,12 +36,21 @@ while cap_de_video.isOpened():
         barcodes = pyzbar.decode(frame) # devuelve una grilla
         # print(frame)
         for barcode in barcodes:
+            ''' 
+            extract the bounding box location of the barcode and draw the
+	        bounding box surrounding the barcode on the image
+            '''
             (x, y, w, h) = barcode.rect
             cv.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
+
+            # convertir a el codigo bytes a texto
             barcodeData = barcode.data.decode("utf-8") 
             barcodeType = barcode.type
+
+            # draw the barcode data and barcode type on the image
             text = "{} ({})".format(barcodeData, barcodeType)
             cv.putText(frame, text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+            # imprimir
             print("[INFO] found {} barcode: {}".format(barcodeType, barcodeData))
 
         cv.imshow("Scanner", frame)
