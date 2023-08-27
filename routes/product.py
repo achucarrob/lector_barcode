@@ -1,17 +1,18 @@
-from flask import Flask
+from flask import Blueprint, render_template, request, url_for, redirect
+# Crear una ruta con Blueprint
+producto = Blueprint("producto", __name__)
 
-app = Flask(__name__)
-
-@app.route("/")
+@producto.route("/")
 def index():
     return "Hello World!"
-
-@app.route("product/:product_name")
+'''
+@producto.route("product/:product_name")
 def consultar_producto():
     if method == "GET":
-         url = 'api url'
+        data = data.json()
 
-         response = url[0]
+        response = url[0]
+'''
 
 
 

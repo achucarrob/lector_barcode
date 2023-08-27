@@ -16,14 +16,14 @@ else:
 
 # Para obtener los valores de nuestra camara, esta parte no es necesaria en el codigo, es solamente para entender como funciona
 ancho_builtin_cam = cap_de_video.get(cv.CAP_PROP_FRAME_WIDTH)
-# print(ancho_builtin_cam)
+print(ancho_builtin_cam)
 alto_builtin_cam = cap_de_video.get(cv.CAP_PROP_FRAME_HEIGHT)
-# print(alto_builtin_cam)
+print(alto_builtin_cam)
 
 # Configuracion del frame que queremos que tenga nuestra camara, es mejor probar valores menores a los que tiene la cam built in, no se puede setear un valor menor a la mitad,
-ancho_deseado = cap_de_video.set(cv.CAP_PROP_FRAME_WIDTH, 320) # devuelve un booleano
+ancho_deseado = cap_de_video.set(cv.CAP_PROP_FRAME_WIDTH, 220) # devuelve un booleano
 # print(ancho_deseado)
-alto_deseado = cap_de_video.set(cv.CAP_PROP_FRAME_HEIGHT, 240) # devuelve un booleano
+alto_deseado = cap_de_video.set(cv.CAP_PROP_FRAME_HEIGHT, 140) # devuelve un booleano
 # print(alto_deseado)
 
 # Abrir la camara
@@ -46,19 +46,25 @@ while cap_de_video.isOpened():
             # convertir a el codigo bytes a texto
             barcodeData = barcode.data.decode("utf-8") 
             barcodeType = barcode.type
-
+            # print(barcodeData)
             # draw the barcode data and barcode type on the image
             text = "{} ({})".format(barcodeData, barcodeType)
             cv.putText(frame, text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
             # imprimir
             print("[INFO] found {} barcode: {}".format(barcodeType, barcodeData))
 
+            # url para consultar a la API  
+            url = 'https://world.openfoodfacts.net/api/v2/product/{}'.format(barcodeData)
+            # data = requests.get(url)
+            print(url)
         cv.imshow("Scanner", frame)
         
         if cv.waitKey(1) == ord("q"):
             break
     else: 
         break
+
+
 
 cap_de_video.release()
 cv.destroyAllWindows()
