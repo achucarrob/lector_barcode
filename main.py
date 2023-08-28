@@ -35,7 +35,7 @@ def index():
                     '''
                     (x, y, w, h) = barcode.rect
                     cv.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-
+                    global barcodeData
                     # convertir a el codigo bytes a texto
                     barcodeData = barcode.data.decode("utf-8") 
                     barcodeType = barcode.type
@@ -52,6 +52,7 @@ def index():
                     #  data = requests.get(url)
                     print(url)
                 cv.imshow("Scanner", frame)
+                
 
                 if cv.waitKey(1) == ord("q"):
                     cap_de_video.release()
@@ -59,12 +60,13 @@ def index():
                     break
             else: 
                 break
-
     return render_template('index.html')
+
 
 # Renderizar detalles del producto o "No se encuentra"
 @app.route("/product", methods=['GET'])
 def consultar_producto():
+    
     data = requests.get(url).json()
 
     packagings = data['material']
