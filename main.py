@@ -1,4 +1,5 @@
-from flask import Flask, Blueprint, render_template, request, url_for, redirect
+from flask import Flask, render_template, url_for, redirect, request
+import requests
 import cv2 as cv
 import numpy as np
 from pyzbar import pyzbar
@@ -14,7 +15,7 @@ app = Flask(__name__)
 
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    # test = request.form['test']
+    # test = s.form['test']
     # En esta ruta quiero que si el method == post: cap_de_video se active
     if request.method == 'POST':
         cap_de_video = cv.VideoCapture(0)
@@ -35,7 +36,7 @@ def index():
                     '''
                     (x, y, w, h) = barcode.rect
                     cv.rectangle(frame, (x, y), (x+w, y+h), (0, 0, 255), 2)
-                    global barcodeData
+                    # global barcodeData
                     # convertir a el codigo bytes a texto
                     barcodeData = barcode.data.decode("utf-8") 
                     barcodeType = barcode.type
@@ -43,14 +44,15 @@ def index():
                     # draw the barcode data and barcode type on the image
                     text = "{} ({})".format(barcodeData, barcodeType)
                     cv.putText(frame, text, (x, y-10), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 2)
+                    return redirect(url_for('consultar_producto', barcode=barcodeData ))
                     # imprimir
                     # print("[INFO] found {} barcode: {}".format(barcodeType, barcodeData))
 
                     # url para consultar a la API  
-                    global url
-                    url = 'https://world.openfoodfacts.net/api/v2/product/{}'.format(barcodeData)
-                    #  data = requests.get(url)
-                    print(url)
+                    # global url
+                    # url = 'https://world.openfoodfacts.net/api/v2/product/{}'.format(barcodeData)
+                    #  data = ss.get(url)
+                    # print(url)
                 cv.imshow("Scanner", frame)
                 
 
@@ -64,11 +66,14 @@ def index():
 
 
 # Renderizar detalles del producto o "No se encuentra"
-@app.route("/product", methods=['GET'])
-def consultar_producto():
-    
+@app.route("/product/<barcode>", methods=['GET'])
+def consultar_producto(barcode):
+    # print(barcode)
+    # from main import index
+    url = 'https://world.openfoodfacts.net/api/v2/product/{}'.format(barcode)
+    print(url)
     data = requests.get(url).json()
 
     packagings = data['material']
-
+    # return render_template('packaging.html')
     return render_template('packaging.html', packagings = packagings)
